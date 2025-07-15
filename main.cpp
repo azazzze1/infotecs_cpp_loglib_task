@@ -5,7 +5,7 @@
 int main(int argc, char** argv)
 {
 	// Создаем логгер с уровнем INFO по умолчанию
-    auto logger = LoggerFactory::createFileLogger("app.log", LogLevel::INFO);
+    auto logger = LoggerFactory::createSocketLogger("127.0.0.1", 12345, LogLevel::INFO);
 
     if (!logger) {
         std::cerr << "Не удалось создать логгер" << std::endl;

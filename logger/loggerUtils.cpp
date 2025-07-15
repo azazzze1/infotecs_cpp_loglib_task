@@ -19,6 +19,8 @@ std::string LoggerUtils::levelToString(LogLevel logLevel){
 
 std::string LoggerUtils::currentTime(){
     auto time = std::chrono::system_clock::now();
-    std::time_t createLogTime = std::chrono::system_clock::to_time_t(time);
-    return std::ctime(&createLogTime);              
+    std::time_t tTime = std::chrono::system_clock::to_time_t(time);
+    std::string fullDate = std::ctime(&tTime);
+    if(!fullDate.empty()) fullDate.pop_back();
+    return fullDate;              
 }

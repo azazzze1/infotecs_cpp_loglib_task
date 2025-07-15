@@ -1,10 +1,6 @@
 #include "ilogger.hpp"
 #include "logger.hpp"
 
-#include <iostream> 
-#include <string>
-
-
 FileLogger::FileLogger(const std::string& filename, LogLevel defaultLevel) {
     defaultLevel = defaultLevel; 
     file_.open(filename, std::ios::app);
@@ -19,5 +15,46 @@ FileLogger::~FileLogger(){
 void FileLogger::log(LogLevel logLevel, const std::string& message){
     if(logLevel < defaultLevel) return; 
     
-    file_<<"["<<LoggerUtils::currentTime()<<"] ["<<LoggerUtils::levelToString(logLevel)<<"] ["<<message<<"]"<<std::endl;
+    file_<<"["<<LoggerUtils::currentTime()<<"] ["<<LoggerUtils::levelToString(logLevel)<<"] "<<message<<std::endl;
+}
+
+
+SocketLogger::SocketLogger(const std::string& host, int port, LogLevel defaultLevel) {
+    defaultLevel = defaultLevel;
+    sockfd = socket(AF_INET, SOCK_STREAM, 0);
+    if (sockfd < 0){
+        std::cerr<<"Ошибка при создании сокета"<<std::endl;
+        return;
+    }
+
+    sockaddr_in serv_address{};
+    serv_address.sin_family = AF_INET;
+    serv_address.sin_port = htons(port);
+
+    if (inet_pton(AF_INET, host.c_str(), &serv_address.sin_addr) <= 0){
+        std::cerr<<"Некорректный адрес"<<std::endl;
+        close(sockfd);
+        sockfd = -1;
+        return;
+    }
+
+    if (connect(sockfd, (struct sockaddr *)&serv_address, sizeof(serv_address)) < 0){
+        std::cerr<<"Ошибка при подключении к сокету"<<std::endl;
+        close(sockfd);
+        sockfd = -1; 
+    }
+}
+
+SocketLogger::~SocketLogger(){
+    if (sockfd > -1) close(sockfd); 
+}
+
+void SocketLogger::log(LogLevel logLevel, const std::string& message){
+    if(logLevel < defaultLevel) return; 
+    
+    if (sockfd <= -1) return;
+
+    std::string logMessage = "["+LoggerUtils::currentTime()+"] ["+LoggerUtils::levelToString(logLevel)+"] "+message+"\n";
+
+    send(sockfd, logMessage.c_str(), logMessage.size(), 0); 
 }

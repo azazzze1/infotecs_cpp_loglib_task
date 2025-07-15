@@ -17,6 +17,11 @@ private:
     std::ofstream file_; 
 };
 
-class SocketLogger{};
+class SocketLogger : public ILogger{
+public:
+    SocketLogger(const std::string& host, int port, LogLevel defaultLevel){};
+    void log(LogLevel logLevel, const std::string& message) {}; 
+
+};
 
 #endif 

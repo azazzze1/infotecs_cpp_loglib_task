@@ -2,6 +2,7 @@
 #define LOGGER_HPP
 
 #include "ilogger.hpp"
+#include "loggerUtils.hpp"
 #include <string>
 #include <fstream>
 
@@ -14,8 +15,8 @@ public:
 
 private:
     std::ofstream file_; 
-}
+};
 
-class SocketLogger{}
+class SocketLogger{};
 
 #endif 

@@ -2,12 +2,13 @@
 #define ILOGGER_HPP
 
 #include <string>
+#include <memory>
 
 enum class LogLevel {
     INFO,
     WARNING, 
     ERROR 
-}
+};
 
 class ILogger{
     public:
@@ -20,6 +21,6 @@ class ILogger{
 
     protected: 
         LogLevel defaultLevel; 
-}
+};
 
 #endif 

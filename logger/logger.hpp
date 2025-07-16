@@ -10,6 +10,7 @@
 #include <netinet/in.h>
 #include <arpa/inet.h>
 #include <unistd.h>
+#include <mutex>
 
 class FileLogger : public ILogger{
 public:
@@ -20,6 +21,7 @@ public:
 
 private:
     std::ofstream file_; 
+    std::mutex mtx_; 
 };
 
 class SocketLogger : public ILogger{
@@ -30,7 +32,8 @@ public:
     void log(LogLevel logLevel, const std::string& message) override; 
 
 private:
-    int sockfd; 
+    int sockfd;
+    std::mutex mtx_; 
 };
 
 #endif 

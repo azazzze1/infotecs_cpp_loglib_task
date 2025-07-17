@@ -1,4 +1,3 @@
-#include "ilogger.hpp"
 #include "logger.hpp"
 
 FileLogger::FileLogger(const std::string& filename, LogLevel defaultLevel) {

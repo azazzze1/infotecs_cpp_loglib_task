@@ -1,5 +1,5 @@
-#ifndef LOGGER_UTILS_HPP
-#define LOGGER_UTILS_HPP
+#ifndef LOGGER_FACTORY_HPP
+#define LOGGER_FACTORY_HPP
 
 #include "ilogger.hpp"
 #include "logger.hpp"
@@ -7,7 +7,7 @@
 
 class LoggerFactory {
     public:
-        virtual ~LoggerFactory() = default;
+        LoggerFactory() = delete;
         
         static std::unique_ptr<ILogger> createFileLogger(
             const std::string& filename, 

@@ -11,7 +11,7 @@ FileLogger::~FileLogger(){
     if (file_.is_open()) file_.close();
 }
 
-void FileLogger::log(LogLevel logLevel, const std::string& message){
+void FileLogger::log(const std::string& message, LogLevel logLevel){
     if(logLevel < defaultLevel) return; 
     std::lock_guard<std::mutex> lock(mtx_); 
     if(!file_.is_open()) return;
@@ -49,7 +49,7 @@ SocketLogger::~SocketLogger(){
     if (sockfd > -1) close(sockfd); 
 }
 
-void SocketLogger::log(LogLevel logLevel, const std::string& message){
+void SocketLogger::log(const std::string& message, LogLevel logLevel){
     if(logLevel < defaultLevel) return; 
 
     std::lock_guard<std::mutex> lock(mtx_); 

@@ -24,3 +24,13 @@ std::string LoggerUtils::currentTime(){
     if(!fullDate.empty()) fullDate.pop_back();
     return fullDate;              
 }
+
+bool LoggerUtils::validateLogLevel(std::optional<LogLevel> optLevel, LogLevel& outLogLevelValue){
+    if (!optLevel) {
+        std::cerr<<"Ошибка: некорректный уровень логирования"<<std::endl;
+        return false;
+    }
+
+    outLogLevelValue = optLevel.value();
+    return true; 
+}

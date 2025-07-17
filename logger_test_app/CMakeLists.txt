@@ -1,4 +1,4 @@
-add_executable(logger_test main.cpp)
+add_executable(logger_test main.cpp appController.cpp)
 
 target_link_libraries(logger_test PRIVATE logger)
 

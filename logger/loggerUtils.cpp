@@ -27,7 +27,6 @@ std::string LoggerUtils::currentTime(){
 
 bool LoggerUtils::validateLogLevel(std::optional<LogLevel> optLevel, LogLevel& outLogLevelValue){
     if (!optLevel) {
-        std::cerr<<"Ошибка: некорректный уровень логирования"<<std::endl;
         return false;
     }
 

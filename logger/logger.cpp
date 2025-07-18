@@ -17,6 +17,10 @@ void FileLogger::log(const std::string& message, LogLevel logLevel){
     file_<<"["<<LoggerUtils::currentTime()<<"] ["<<LoggerUtils::levelToString(logLevel)<<"] "<<message<<std::endl;
 }
 
+void FileLogger::log(const std::string& message){
+    log(message, defaultLevel); 
+}
+
 void FileLogger::setLogLevel(LogLevel logLevel){
     defaultLevel = logLevel;
 }
@@ -66,4 +70,8 @@ void SocketLogger::log(const std::string& message, LogLevel logLevel) {
 
 void SocketLogger::setLogLevel(LogLevel logLevel){
     defaultLevel = logLevel;
+}
+
+void SocketLogger::log(const std::string& message){
+    log(message, defaultLevel); 
 }

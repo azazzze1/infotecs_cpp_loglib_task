@@ -45,8 +45,15 @@ void appController::log(const std::string& message, const std::string& strLogLev
     logQueue.addTask( [this, message, strLogLevel] {
         std::optional<LogLevel> optLevel = LoggerUtils::stringToLevel(strLogLevel);
         LogLevel logLevel;
-        if(LoggerUtils::validateLogLevel(optLevel, logLevel)) 
-            logger->log(message, logLevel); 
+        if(LoggerUtils::validateLogLevel(optLevel, logLevel)){
+            logger->log(message, logLevel);
+        } 
+        else{
+            std::cerr<<"\tНекорректный уровень логирования!"<<std::endl;
+            std::cerr<<"\tИспользован уровень по умолчанию."<<std::endl; 
+            std::string fullMessage = strLogLevel + ' ' + message;
+            logger->log(fullMessage); 
+        }
     });
 }
 
@@ -55,7 +62,10 @@ void appController::setLogLevel(const std::string& strLogLevel){
         std::optional<LogLevel> optLevel = LoggerUtils::stringToLevel(strLogLevel);
         LogLevel logLevel;
         if(LoggerUtils::validateLogLevel(optLevel, logLevel)) 
-            logger->setLogLevel(logLevel); 
+            logger->setLogLevel(logLevel);
+        else
+            std::cerr<<"\tНекорректный уровень логирования!"<<std::endl;
+            std::cerr<<"\tДоступны следующие уровни логирования: INFO, WARNING, ERROR"<<std::endl; 
     });
 }
 

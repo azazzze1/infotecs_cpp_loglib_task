@@ -17,7 +17,9 @@ public:
     FileLogger(const std::string& filename, LogLevel defaultLevel);
     ~FileLogger() override; 
 
-    void log(const std::string& message, LogLevel logLevel) override; 
+    void log(const std::string& message, LogLevel logLevel) override;
+    void log(const std::string& message) override; 
+    
     void setLogLevel(LogLevel logLevel) override; 
 
 private:
@@ -31,7 +33,9 @@ public:
     SocketLogger(const std::string& host, int port, LogLevel defaultLevel);
     ~SocketLogger() override; 
 
-    void log(const std::string& message, LogLevel logLevel) override; 
+    void log(const std::string& message, LogLevel logLevel) override;
+    void log(const std::string& message) override; 
+
     void setLogLevel(LogLevel logLevel) override; 
 
 private:

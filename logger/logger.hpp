@@ -18,8 +18,10 @@ public:
     ~FileLogger() override; 
 
     void log(const std::string& message, LogLevel logLevel) override; 
+    void setLogLevel(LogLevel logLevel) override; 
 
 private:
+    LogLevel defaultLevel; 
     std::ofstream file_; 
     std::mutex mtx_; 
 };
@@ -30,9 +32,11 @@ public:
     ~SocketLogger() override; 
 
     void log(const std::string& message, LogLevel logLevel) override; 
+    void setLogLevel(LogLevel logLevel) override; 
 
 private:
     int sockfd;
+    LogLevel defaultLevel; 
     std::mutex mtx_; 
 };
 

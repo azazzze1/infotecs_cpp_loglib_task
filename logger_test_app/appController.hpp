@@ -7,6 +7,7 @@
 
 #include "loggerFactory.hpp"
 #include "loggerUtils.hpp"
+#include "threadLogQueue.hpp"
 
 class appController{
 public:

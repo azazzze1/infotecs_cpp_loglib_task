@@ -1,7 +1,6 @@
 #include "logger.hpp"
 
-FileLogger::FileLogger(const std::string& filename, LogLevel defaultLevel) {
-    defaultLevel = defaultLevel; 
+FileLogger::FileLogger(const std::string& filename, LogLevel defaultLevel) : defaultLevel(defaultLevel) {
     file_.open(filename, std::ios::app);
 
     if (!file_) std::cerr<<"Ошибка при открытии следующего файла: "<<filename<<std::endl;  
@@ -18,8 +17,12 @@ void FileLogger::log(const std::string& message, LogLevel logLevel){
     file_<<"["<<LoggerUtils::currentTime()<<"] ["<<LoggerUtils::levelToString(logLevel)<<"] "<<message<<std::endl;
 }
 
+void FileLogger::setLogLevel(LogLevel logLevel){
+    defaultLevel = logLevel;
+}
 
-SocketLogger::SocketLogger(const std::string& host, int port, LogLevel defaultLevel) {
+
+SocketLogger::SocketLogger(const std::string& host, int port, LogLevel defaultLevel) : defaultLevel(defaultLevel) {
     defaultLevel = defaultLevel;
     sockfd = socket(AF_INET, SOCK_STREAM, 0);
     if (sockfd < 0){
@@ -49,7 +52,7 @@ SocketLogger::~SocketLogger(){
     if (sockfd > -1) close(sockfd); 
 }
 
-void SocketLogger::log(const std::string& message, LogLevel logLevel){
+void SocketLogger::log(const std::string& message, LogLevel logLevel) {
     if(logLevel < defaultLevel) return; 
 
     std::lock_guard<std::mutex> lock(mtx_); 
@@ -59,4 +62,8 @@ void SocketLogger::log(const std::string& message, LogLevel logLevel){
     std::string logMessage = "["+LoggerUtils::currentTime()+"] ["+LoggerUtils::levelToString(logLevel)+"] "+message+"\n";
 
     send(sockfd, logMessage.c_str(), logMessage.size(), 0); 
+}
+
+void SocketLogger::setLogLevel(LogLevel logLevel){
+    defaultLevel = logLevel;
 }

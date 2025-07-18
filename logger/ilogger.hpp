@@ -14,13 +14,7 @@ class ILogger{
     public:
         virtual ~ILogger() = default;
         virtual void log(const std::string& message, LogLevel logLevel) = 0; 
-        
-        void setLogLevel(LogLevel level) {
-            defaultLevel = level;
-        }
-
-    protected: 
-        LogLevel defaultLevel; 
+        virtual void setLogLevel(LogLevel level) = 0;
 };
 
 #endif 

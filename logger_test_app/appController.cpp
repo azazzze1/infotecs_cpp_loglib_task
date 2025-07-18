@@ -31,21 +31,32 @@ appController::appController(int argc, char* argv[]) : flagForLoop(false){
         return;
     }
 
+    logThread = std::thread([this] {logQueue.run();});
+
     flagForLoop = true; 
 }
 
+appController::~appController(){
+    logQueue.stop();
+    if (logThread.joinable()) logThread.join();
+}
+
 void appController::log(const std::string& message, const std::string& strLogLevel){
-    std::optional<LogLevel> optLevel = LoggerUtils::stringToLevel(strLogLevel);
-    LogLevel logLevel;
-    if(LoggerUtils::validateLogLevel(optLevel, logLevel)); 
-        logger->log(message, logLevel); 
+    logQueue.addTask( [this, message, strLogLevel] {
+        std::optional<LogLevel> optLevel = LoggerUtils::stringToLevel(strLogLevel);
+        LogLevel logLevel;
+        if(LoggerUtils::validateLogLevel(optLevel, logLevel)) 
+            logger->log(message, logLevel); 
+    });
 }
 
 void appController::setLogLevel(const std::string& strLogLevel){
-    std::optional<LogLevel> optLevel = LoggerUtils::stringToLevel(strLogLevel);
-    LogLevel logLevel;
-    if(LoggerUtils::validateLogLevel(optLevel, logLevel)); 
-        logger->setLogLevel(logLevel); 
+    logQueue.addTask([this, strLogLevel] {
+        std::optional<LogLevel> optLevel = LoggerUtils::stringToLevel(strLogLevel);
+        LogLevel logLevel;
+        if(LoggerUtils::validateLogLevel(optLevel, logLevel)) 
+            logger->setLogLevel(logLevel); 
+    });
 }
 
 bool appController::getFlagForLoop(){

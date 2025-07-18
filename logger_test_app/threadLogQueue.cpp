@@ -11,7 +11,7 @@ void ThreadLogQueue::run(){
         std::function<void()> task;
         {
             std::unique_lock<std::mutex> lock(mtx);
-            syncVariable.wait(lock, [this] {return !taskQueue.empty || stopQueueFlag;});
+            syncVariable.wait(lock, [this] {return !taskQueue.empty() || stopQueueFlag;});
             if (stopQueueFlag && taskQueue.empty()) break;
             task = taskQueue.front();
             taskQueue.pop();

@@ -12,6 +12,7 @@
 class appController{
 public:
     appController(int argc, char* argv[]);
+    ~appController(); 
 
     void log(const std::string& message, const std::string& strLogLevel);
     void setLogLevel(const std::string& strLogLevel);  
@@ -25,6 +26,8 @@ public:
 private:
     std::unique_ptr<ILogger> logger;
     bool flagForLoop; 
+    ThreadLogQueue logQueue;
+    std::thread logThread;
 };
 
 #endif

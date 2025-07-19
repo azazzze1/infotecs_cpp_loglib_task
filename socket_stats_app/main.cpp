@@ -4,7 +4,10 @@
 
 int main(int argc, char* argv[]){
     
-    std::cout<<"КОНЕЦ!"<<std::endl; 
+    appController controller{argc, argv};
+
+    controller.listenSocket();
+    controller.waitForProcessStats();
 
 	return 0;
 }

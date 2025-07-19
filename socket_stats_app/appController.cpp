@@ -7,8 +7,8 @@ appController::appController(int argc, char* argv[]){
         return;
     }
 
-    std::string socketAddress = argv[2];
-    int socketPort = std::stoi(argv[3]);
+    std::string socketAddress = argv[1];
+    int socketPort = std::stoi(argv[2]);
 
     if (!connectToSocket(socketAddress, socketPort)){
         std::cerr<<"\tЗапустите приложение с верными данными"<<std::endl; 
@@ -17,7 +17,8 @@ appController::appController(int argc, char* argv[]){
 
     N = std::stoi(argv[3]);
     T = std::stoi(argv[4]);
-    flagForListenLoop = true;  
+    flagForWorkLoop = true;  
+    receiverThread = std::thread(&appController::listenSocket, this);
 }
 
 bool appController::connectToSocket(const std::string& socketAddress, int socketPort){
@@ -52,13 +53,13 @@ void appController::listenSocket(){
     const int BUFFER_SIZE = 1024;
     char buffer[BUFFER_SIZE];
 
-    while(flagForListenLoop){
+    while(flagForWorkLoop){
         memset(buffer, 0, BUFFER_SIZE);
         int valread = read(socketfd, buffer, BUFFER_SIZE - 1);
 
         if (valread<=0){
             std::cerr<<"\tСоединение разоравно."<<std::endl;
-            flagForListenLoop = false; 
+            flagForWorkLoop = false; 
             break; 
         }
 
@@ -122,3 +123,50 @@ bool appController::parseLogMessage(const std::string& line, LogMessage& outLogM
     return true;
 }
 
+void appController::showStats(SocketStats currentSocketStats){
+    std::cout<<"\t\tСтатистика по количеству сообщений"<<std::endl;
+    std::cout<<"\tВсего сообщений: "<<currentSocketStats.messageCount<<std::endl;
+    std::cout<<"\tСообщений уровня INFO: "<<currentSocketStats.messageLevelCount[LogLevel::INFO]<<std::endl;
+    std::cout<<"\tСообщений уровня WARNING: "<<currentSocketStats.messageLevelCount[LogLevel::WARNING]<<std::endl;
+    std::cout<<"\tСообщений уровня ERROR: "<<currentSocketStats.messageLevelCount[LogLevel::ERROR]<<std::endl;
+    std::cout<<"\tСообщений за последний час: "<<currentSocketStats.messageForHourCount<<std::endl;
+    // std::cout<<std::endl;
+    std::cout<<"\t\tСтатистика по длине сообщений"<<std::endl;
+    std::cout<<"\tМинимальная длина: "<<currentSocketStats.minMessageLength<<std::endl;
+    std::cout<<"\tМаксимальная длина: "<<currentSocketStats.maxMessageLength<<std::endl;
+    std::cout<<"\tСредняя длина: "<<currentSocketStats.avgMessageLength<<std::endl;
+    std::cout<<std::endl; 
+}
+
+void appController::waitForProcessStats(){
+    auto lastStatsTime = std::chrono::system_clock::now();
+    SocketStats lastStats;
+
+    while(flagForWorkLoop){
+       SocketStats newStats = socketStatsCollector.getSocketStats();
+       auto currentTime = std::chrono::system_clock::now();
+
+       if(newStats.messageCount - lastStats.messageCount >= N){
+            showStats(newStats);
+            lastStats = newStats;
+            lastStatsTime = currentTime; 
+       }
+
+       if(std::chrono::duration_cast<std::chrono::seconds>(currentTime - lastStatsTime).count() >= T){
+            if(lastStats.totalLength != newStats.totalLength){
+                showStats(newStats);
+                lastStatsTime = currentTime;
+            }
+       }
+    }
+
+    std::this_thread::sleep_for(std::chrono::seconds(1)); 
+}
+
+appController::~appController(){
+    flagForWorkLoop = false;
+    if (receiverThread.joinable()) {
+        receiverThread.join();
+    }
+    close(socketfd);
+}

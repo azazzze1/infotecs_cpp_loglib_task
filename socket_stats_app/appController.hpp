@@ -7,6 +7,7 @@
 #include <iostream>
 #include <cstring>
 #include <iomanip>
+#include <thread>
 
 class appController{
 public:
@@ -16,13 +17,18 @@ public:
     void listenSocket();
     bool parseLogMessage(const std::string& line, LogMessage& outLogMessage);
 
+    void showStats(SocketStats socketStats);
+    void waitForProcessStats(); 
+
+    ~appController();
 
 private:
     SocketStatsCollector socketStatsCollector;
-    bool flagForListenLoop = false;
+    bool flagForWorkLoop = false;
     size_t N;
     size_t T;
     int socketfd; 
+    std::thread receiverThread;
 }; 
 
 #endif

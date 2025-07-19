@@ -5,12 +5,9 @@ set(CMAKE_CXX_STANDARD 17)
 set(CMAKE_CXX_STANDARD_REQUIRED ON)
 
 option(BUILD_SHARED_LIB "Build shared (dynamic) library" OFF)
-option(BUILD_TESTS "Build test application" ON)
 
 set(CMAKE_C_COMPILER gcc)
 
 add_subdirectory(logger)
-
-if(BUILD_TESTS)
-    add_subdirectory(logger_test_app)
-endif()
+add_subdirectory(socket_stats_app)
+add_subdirectory(logger_test_app)

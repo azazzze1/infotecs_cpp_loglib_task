@@ -15,7 +15,7 @@ struct SocketStats{
     std::unordered_map<LogLevel, size_t> messageLevelCount;
     size_t messageForHourCount = 0;
 
-    size_t minMessageLength = 0;
+    size_t minMessageLength = std::numeric_limits<size_t>::max();
     size_t maxMessageLength = 0;
     size_t totalLength = 0;
 

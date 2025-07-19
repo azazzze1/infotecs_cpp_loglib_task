@@ -39,7 +39,7 @@ bool appController::connectToSocket(const std::string& socketAddress, int socket
     }
 
     struct timeval tv;
-    tv.tv_sec = 1;  // 1 секунда таймаут
+    tv.tv_sec = 1;
     tv.tv_usec = 0;
     setsockopt(socketfd, SOL_SOCKET, SO_RCVTIMEO, &tv, sizeof(tv));
 
@@ -77,7 +77,6 @@ void appController::listenSocket(){
 
         while(std::getline(iss,line)){
             LogMessage logMessage;
-            std::cout<<"LINE: "<<line<<std::endl; 
             if (parseLogMessage(line, logMessage)){
                 socketStatsCollector.addMessage(logMessage);
             }
@@ -139,7 +138,7 @@ void appController::showStats(SocketStats currentSocketStats){
     std::cout<<"\tСообщений уровня WARNING: "<<currentSocketStats.messageLevelCount[LogLevel::WARNING]<<std::endl;
     std::cout<<"\tСообщений уровня ERROR: "<<currentSocketStats.messageLevelCount[LogLevel::ERROR]<<std::endl;
     std::cout<<"\tСообщений за последний час: "<<currentSocketStats.messageForHourCount<<std::endl;
-    // std::cout<<std::endl;
+    
     std::cout<<"\t\tСтатистика по длине сообщений"<<std::endl;
     std::cout<<"\tМинимальная длина: "<<currentSocketStats.minMessageLength<<std::endl;
     std::cout<<"\tМаксимальная длина: "<<currentSocketStats.maxMessageLength<<std::endl;

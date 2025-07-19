@@ -20,7 +20,7 @@ void handleClient(int clientSocket, bool isSender) {
             std::unique_lock<std::mutex> lock(socketMutex);
             senderSocket = clientSocket;
             std::cout << "Подключён отправитель логов." << std::endl;
-        } // lock выходит из области видимости здесь
+        } 
 
         while (true) {
             memset(buffer, 0, BUFFER_SIZE);
@@ -37,7 +37,7 @@ void handleClient(int clientSocket, bool isSender) {
                 if (receiverSocket != -1) {
                     send(receiverSocket, buffer, valread, 0);
                 }
-            } // lock выходит из области видимости здесь
+            } 
         }
 
         {
@@ -53,7 +53,7 @@ void handleClient(int clientSocket, bool isSender) {
         }
 
         while (true) {
-            sleep(1); // Ждём, пока будут данные
+            sleep(1); 
         }
     }
 }
@@ -86,7 +86,7 @@ int main() {
 
     std::cout << "TCP-сервер запущен на порту " << PORT << ". Ожидание клиентов..." << std::endl;
 
-    bool isSenderNext = true; // Определяем, кто следующий: отправитель или получатель
+    bool isSenderNext = true; 
 
     while (true) {
         int new_socket = accept(server_fd, (struct sockaddr *)&address, &addrlen);

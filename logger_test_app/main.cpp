@@ -10,7 +10,8 @@ int main(int argc, char* argv[]){
 
     while (controller.getFlagForLoop()){
         // здесь будет пользовательский ввод уровня важности и самого сообщения
-        std::cin>>userCommand;
+        std::cout<<'~';
+        std::getline(std::cin, userCommand);
         controller.executeCommand(userCommand);
     }
 

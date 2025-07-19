@@ -4,6 +4,7 @@
 #include <iostream>
 #include <string>
 #include <optional>
+#include <sstream>
 
 #include "loggerFactory.hpp"
 #include "loggerUtils.hpp"

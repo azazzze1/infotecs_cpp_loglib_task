@@ -1,5 +1,7 @@
 #include <iostream>
-#include <string>
+#include <thread>
+#include <mutex>
+#include <vector>
 #include <cstring>
 #include <unistd.h>
 #include <arpa/inet.h>
@@ -7,11 +9,59 @@
 const int PORT = 12345;
 const int BUFFER_SIZE = 1024;
 
+int senderSocket = -1;
+int receiverSocket = -1;
+std::mutex socketMutex;
+
+void handleClient(int clientSocket, bool isSender) {
+    char buffer[BUFFER_SIZE];
+    if (isSender) {
+        {
+            std::unique_lock<std::mutex> lock(socketMutex);
+            senderSocket = clientSocket;
+            std::cout << "Подключён отправитель логов." << std::endl;
+        } // lock выходит из области видимости здесь
+
+        while (true) {
+            memset(buffer, 0, BUFFER_SIZE);
+            int valread = read(clientSocket, buffer, BUFFER_SIZE - 1);
+            if (valread <= 0) {
+                std::cerr << "Отправитель отключён." << std::endl;
+                break;
+            }
+
+            std::cout << "Получен лог: " << buffer << std::endl;
+
+            {
+                std::unique_lock<std::mutex> lock(socketMutex);
+                if (receiverSocket != -1) {
+                    send(receiverSocket, buffer, valread, 0);
+                }
+            } // lock выходит из области видимости здесь
+        }
+
+        {
+            std::unique_lock<std::mutex> lock(socketMutex);
+            senderSocket = -1;
+            close(clientSocket);
+        }
+    } else {
+        {
+            std::unique_lock<std::mutex> lock(socketMutex);
+            receiverSocket = clientSocket;
+            std::cout << "Подключён получатель логов." << std::endl;
+        }
+
+        while (true) {
+            sleep(1); // Ждём, пока будут данные
+        }
+    }
+}
+
 int main() {
-    int server_fd, new_socket;
+    int server_fd;
     struct sockaddr_in address;
-    int addrlen = sizeof(address);
-    char buffer[BUFFER_SIZE] = {0};
+    socklen_t addrlen = sizeof(address);
 
     if ((server_fd = socket(AF_INET, SOCK_STREAM, 0)) == 0) {
         perror("socket failed");
@@ -28,34 +78,28 @@ int main() {
         exit(EXIT_FAILURE);
     }
 
-    if (listen(server_fd, 3) < 0) {
+    if (listen(server_fd, 2) < 0) {
         perror("listen");
         close(server_fd);
         exit(EXIT_FAILURE);
     }
 
-    std::cout << "TCP-сервер запущен на порту " << PORT << ". Ожидание подключения..." << std::endl;
+    std::cout << "TCP-сервер запущен на порту " << PORT << ". Ожидание клиентов..." << std::endl;
 
-    if ((new_socket = accept(server_fd, (struct sockaddr *)&address, (socklen_t*)&addrlen)) < 0) {
-        perror("accept");
-        close(server_fd);
-        exit(EXIT_FAILURE);
-    }
-
-    std::cout << "Клиент подключён. Ожидание логов..." << std::endl;
+    bool isSenderNext = true; // Определяем, кто следующий: отправитель или получатель
 
     while (true) {
-        memset(buffer, 0, BUFFER_SIZE);
-        int valread = read(new_socket, buffer, BUFFER_SIZE - 1);
-        if (valread <= 0) {
-            std::cerr << "Соединение закрыто клиентом." << std::endl;
-            break;
+        int new_socket = accept(server_fd, (struct sockaddr *)&address, &addrlen);
+        if (new_socket < 0) {
+            perror("accept");
+            continue;
         }
 
-        std::cout << "Получено: " << buffer << std::endl;
+        std::thread clientThread(handleClient, new_socket, isSenderNext);
+        clientThread.detach();
+        isSenderNext = false;
     }
 
-    close(new_socket);
     close(server_fd);
     return 0;
 }

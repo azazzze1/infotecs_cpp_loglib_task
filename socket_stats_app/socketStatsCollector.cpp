@@ -22,7 +22,8 @@ SocketStats SocketStatsCollector::getSocketStats(){
             return msg.date >= hourAgo;
         });
     
-    socketStats.avgMessageLength = socketStats.totalLength / socketStats.messageCount; 
-    
+    if(socketStats.messageCount != 0)
+        socketStats.avgMessageLength = socketStats.totalLength / socketStats.messageCount; 
+        
     return socketStats; 
 }

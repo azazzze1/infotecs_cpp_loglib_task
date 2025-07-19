@@ -20,6 +20,8 @@ public:
     void showStats(SocketStats socketStats);
     void waitForProcessStats(); 
 
+    void run();
+
     ~appController();
 
 private:
@@ -29,6 +31,7 @@ private:
     size_t T;
     int socketfd; 
     std::thread receiverThread;
+    std::thread statsThread;
 }; 
 
 #endif

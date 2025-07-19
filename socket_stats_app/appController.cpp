@@ -18,7 +18,6 @@ appController::appController(int argc, char* argv[]){
     N = std::stoi(argv[3]);
     T = std::stoi(argv[4]);
     flagForWorkLoop = true;  
-    receiverThread = std::thread(&appController::listenSocket, this);
 }
 
 bool appController::connectToSocket(const std::string& socketAddress, int socketPort){
@@ -39,6 +38,11 @@ bool appController::connectToSocket(const std::string& socketAddress, int socket
         return false;
     }
 
+    struct timeval tv;
+    tv.tv_sec = 1;  // 1 секунда таймаут
+    tv.tv_usec = 0;
+    setsockopt(socketfd, SOL_SOCKET, SO_RCVTIMEO, &tv, sizeof(tv));
+
     if (connect(socketfd, (struct sockaddr *)&serv_address, sizeof(serv_address)) < 0){
         std::cerr<<"\tОшибка при подключении к сокету"<<std::endl;
         close(socketfd);
@@ -57,10 +61,14 @@ void appController::listenSocket(){
         memset(buffer, 0, BUFFER_SIZE);
         int valread = read(socketfd, buffer, BUFFER_SIZE - 1);
 
-        if (valread<=0){
-            std::cerr<<"\tСоединение разоравно."<<std::endl;
-            flagForWorkLoop = false; 
-            break; 
+        if (valread < 0) {
+            if (errno == EAGAIN || errno == EWOULDBLOCK) {
+                continue;
+            } else {
+                std::cerr << "\tОшибка чтения: " << strerror(errno) << std::endl;
+                flagForWorkLoop = false;
+                break;
+            }
         }
 
         std::string receivedMessage(buffer);
@@ -69,6 +77,7 @@ void appController::listenSocket(){
 
         while(std::getline(iss,line)){
             LogMessage logMessage;
+            std::cout<<"LINE: "<<line<<std::endl; 
             if (parseLogMessage(line, logMessage)){
                 socketStatsCollector.addMessage(logMessage);
             }
@@ -79,10 +88,10 @@ void appController::listenSocket(){
 bool appController::parseLogMessage(const std::string& line, LogMessage& outLogMessage){
     size_t dateStartPos = line.find('['); 
     size_t dateEndPos = line.find(']');
-    size_t levelStartPos = line.find('[', dateStartPos+1);
-    size_t levelEndPos = line.find(']', levelStartPos+1);
+    size_t levelStartPos = line.find('[', dateEndPos+1);
+    size_t levelEndPos = line.find(']', levelStartPos);
 
-    if (dateStartPos == std::string::npos || dateEndPos != std::string::npos ||
+    if (dateStartPos == std::string::npos || dateEndPos == std::string::npos ||
         levelStartPos == std::string::npos || levelEndPos == std::string::npos ||
         levelEndPos + 2 >= line.length()){
             std::cerr<<"\tНеправильный формат сообщения"<<std::endl;
@@ -143,21 +152,21 @@ void appController::waitForProcessStats(){
     SocketStats lastStats;
 
     while(flagForWorkLoop){
-       SocketStats newStats = socketStatsCollector.getSocketStats();
-       auto currentTime = std::chrono::system_clock::now();
+        SocketStats newStats = socketStatsCollector.getSocketStats();
+        auto currentTime = std::chrono::system_clock::now();
 
-       if(newStats.messageCount - lastStats.messageCount >= N){
+        if(newStats.messageCount - lastStats.messageCount >= N){
             showStats(newStats);
             lastStats = newStats;
             lastStatsTime = currentTime; 
-       }
+        }
 
-       if(std::chrono::duration_cast<std::chrono::seconds>(currentTime - lastStatsTime).count() >= T){
+        if(std::chrono::duration_cast<std::chrono::seconds>(currentTime - lastStatsTime).count() >= T){
             if(lastStats.totalLength != newStats.totalLength){
                 showStats(newStats);
                 lastStatsTime = currentTime;
             }
-       }
+        }
     }
 
     std::this_thread::sleep_for(std::chrono::seconds(1)); 
@@ -168,5 +177,16 @@ appController::~appController(){
     if (receiverThread.joinable()) {
         receiverThread.join();
     }
+    if (statsThread.joinable()) {
+        statsThread.join();
+    }
     close(socketfd);
+}
+
+void appController::run(){
+    receiverThread = std::thread(&appController::listenSocket, this);
+    statsThread = std::thread(&appController::waitForProcessStats, this);
+
+    if (receiverThread.joinable()) receiverThread.join();
+    if (statsThread.joinable()) statsThread.join();
 }

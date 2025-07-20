@@ -1,5 +1,7 @@
 #include "loggerFactory.hpp"
 
+// Реализация LoggerFactory
+
 std::unique_ptr<ILogger> LoggerFactory::createFileLogger(const std::string& filename, LogLevel defaultLevel) {
     return std::make_unique<FileLogger>(filename, defaultLevel);
 }

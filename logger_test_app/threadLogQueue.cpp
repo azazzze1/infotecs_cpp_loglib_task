@@ -1,5 +1,7 @@
 #include "threadLogQueue.hpp"
 
+// Реализация ThreadLogQueue
+
 void ThreadLogQueue::addTask(std::function<void()> task){
     std::lock_guard<std::mutex> lock(mtx);
     taskQueue.push(task);

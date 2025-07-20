@@ -1,5 +1,7 @@
 #include "appController.hpp"
 
+// Реализация appController
+
 appController::appController(int argc, char* argv[]){
     if(argc!= 5){
         std::cerr<<"\tВведены не все параметры:"<<std::endl;
@@ -38,6 +40,7 @@ bool appController::connectToSocket(const std::string& socketAddress, int socket
         return false;
     }
 
+    // Таймаут в одну секунду для работы блокирующей функции read() логов из сокета.  
     struct timeval tv;
     tv.tv_sec = 1;
     tv.tv_usec = 0;
@@ -61,6 +64,7 @@ void appController::listenSocket(){
         memset(buffer, 0, BUFFER_SIZE);
         int valread = read(socketfd, buffer, BUFFER_SIZE - 1);
 
+        // Разделяет ошибку таймаута и ошибки чтения на разные ошибки read(). 
         if (valread < 0) {
             if (errno == EAGAIN || errno == EWOULDBLOCK) {
                 continue;
@@ -70,7 +74,7 @@ void appController::listenSocket(){
                 break;
             }
         }
-
+        
         std::string receivedMessage(buffer);
         std::istringstream iss(receivedMessage);
         std::string line;
@@ -97,6 +101,7 @@ bool appController::parseLogMessage(const std::string& line, LogMessage& outLogM
             return false;
         }
     
+    // Парсинг уровня логирования
     std::string strLogLevel = line.substr(levelStartPos+1, levelEndPos-levelStartPos-1);
 
     std::optional<LogLevel> optLevel = LoggerUtils::stringToLevel(strLogLevel);
@@ -107,10 +112,12 @@ bool appController::parseLogMessage(const std::string& line, LogMessage& outLogM
         std::cerr<<"\tНекорректный уровень логирования!"<<std::endl;
         return false;
     }
-    
+
+    // Парсинг текста логирования
     std::string logText = line.substr(levelEndPos + 2);
     outLogMessage.text = logText;
 
+    // Парсинг даты логирования
     std::string strLogDate = line.substr(dateStartPos+1, dateEndPos-dateStartPos-1);
 
     std::tm tm = {};
@@ -154,12 +161,14 @@ void appController::waitForProcessStats(){
         SocketStats newStats = socketStatsCollector.getSocketStats();
         auto currentTime = std::chrono::system_clock::now();
 
+        // Ожидание N сообщений
         if(newStats.messageCount - lastStats.messageCount >= N){
             showStats(newStats);
             lastStats = newStats;
             lastStatsTime = currentTime; 
         }
 
+        // Ожидание T секунд
         if(std::chrono::duration_cast<std::chrono::seconds>(currentTime - lastStatsTime).count() >= T){
             if(lastStats.totalLength != newStats.totalLength){
                 showStats(newStats);

@@ -1,5 +1,7 @@
 #include "socketStatsCollector.hpp"
 
+// Реализация SocketStatsCollector
+
 void SocketStatsCollector::addMessage(const LogMessage& logMessage){
     messageHistory.push_back(logMessage); 
 

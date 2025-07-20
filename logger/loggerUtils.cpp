@@ -1,5 +1,7 @@
 #include "loggerUtils.hpp"
 
+// Реализация LoggerUtils 
+
 std::optional<LogLevel> LoggerUtils::stringToLevel(const std::string& stringLevel){
     if (stringLevel == "INFO")  return LogLevel::INFO;
     else if (stringLevel == "WARNING") return LogLevel::WARNING;
@@ -29,7 +31,6 @@ bool LoggerUtils::validateLogLevel(std::optional<LogLevel> optLevel, LogLevel& o
     if (!optLevel) {
         return false;
     }
-
     outLogLevelValue = optLevel.value();
     return true; 
 }

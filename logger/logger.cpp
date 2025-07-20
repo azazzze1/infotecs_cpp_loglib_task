@@ -1,5 +1,7 @@
 #include "logger.hpp"
 
+// Реализация FileLogger 
+
 FileLogger::FileLogger(const std::string& filename, LogLevel defaultLevel) : defaultLevel(defaultLevel) {
     file_.open(filename, std::ios::app);
 
@@ -25,6 +27,7 @@ void FileLogger::setLogLevel(LogLevel logLevel){
     defaultLevel = logLevel;
 }
 
+// Реализация SocketLogger 
 
 SocketLogger::SocketLogger(const std::string& host, int port, LogLevel defaultLevel) : defaultLevel(defaultLevel) {
     defaultLevel = defaultLevel;

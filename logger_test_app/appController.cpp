@@ -1,5 +1,7 @@
 #include "appController.hpp"
 
+// Реализация appController
+
 appController::appController(int argc, char* argv[]) : flagForLoop(false){
     std::optional<LogLevel> levelOpt = LoggerUtils::stringToLevel(argv[1]);
 
@@ -17,14 +19,14 @@ appController::appController(int argc, char* argv[]) : flagForLoop(false){
         int socketPort = std::stoi(argv[3]);
         logger = LoggerFactory::createSocketLogger(socketAddress, socketPort, defaultLevel);
     } else{
-        std::cout<<"Некорректные данные для подключения!"<<std::endl;
-        std::cout<<argv[0]<<" <DEFAULT-LOG-LEVEL>"<<" <relative-logfile-path>"<<std::endl;
-        std::cout<<argv[0]<<" <DEFAULT-LOG-LEVEL>"<<" <socket-ip-adress> "<<"<socket-port>"<<std::endl;
+        std::cout<<"\tНекорректные данные для подключения!"<<std::endl;
+        std::cout<<argv[0]<<"\t <DEFAULT-LOG-LEVEL>"<<" <relative-logfile-path>"<<std::endl;
+        std::cout<<argv[0]<<"\t <DEFAULT-LOG-LEVEL>"<<" <socket-ip-adress> "<<"<socket-port>"<<std::endl;
         return; 
     }
 
     if (!logger) {
-        std::cerr << "Не удалось создать логгер" << std::endl;
+        std::cerr << "\tНе удалось создать логгер" << std::endl;
         return;
     }
 
@@ -41,6 +43,8 @@ appController::~appController(){
 void appController::log(const std::string& message, const std::string& strLogLevel){
     std::optional<LogLevel> optLevel = LoggerUtils::stringToLevel(strLogLevel);
     LogLevel logLevel;
+    // Если второе слово в команде пользователя -- не уровень важности,
+    // то происходит логирование с уровнем важности по умолчанию. 
     if(LoggerUtils::validateLogLevel(optLevel, logLevel)){
         logQueue.addTask([this, message, logLevel] {logger->log(message, logLevel);});
         
@@ -75,9 +79,11 @@ void appController::executeCommand(const std::string& command){
         std::cout<<"\tЗавершение программы..."<<std::endl;
         flagForLoop = false;
     }else if(commandName == "log"){
-        std::string logLevel, message;
+        std::string logLevel, message; 
         iss>>logLevel;
 
+        // Проверка на случай, если в команде всего два слова.
+        // Например: "log СЛОВО".  
         if(iss.eof()){
             message = " ";
         }else{

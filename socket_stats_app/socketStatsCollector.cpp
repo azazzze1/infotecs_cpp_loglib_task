@@ -1,4 +1,5 @@
 #include "socketStatsCollector.hpp"
+#include <iostream>
 
 // Реализация SocketStatsCollector
 
@@ -9,10 +10,12 @@ void SocketStatsCollector::addMessage(const LogMessage& logMessage){
     socketStats.messageCount++;
     socketStats.messageLevelCount[logMessage.logLevel]++; 
 
-    size_t logMessageLength = logMessage.text.size(); 
+    size_t logMessageLength = logMessage.text.size() - 2; 
     socketStats.minMessageLength = std::min(socketStats.minMessageLength, logMessageLength);
     socketStats.maxMessageLength = std::max(socketStats.maxMessageLength, logMessageLength);
     socketStats.totalLength += logMessageLength; 
+
+    std::cout<<logMessage.text<<std::endl; 
 } 
 
 
@@ -28,8 +31,7 @@ SocketStats SocketStatsCollector::getSocketStats(){
     
     if(socketStats.messageCount != 0)
         socketStats.avgMessageLength = socketStats.totalLength / socketStats.messageCount; 
+
     
-    // Учитываем пробел и перевод строки в найденных предложениях
-    socketStats.minMessageLength-=3;
     return socketStats; 
 }

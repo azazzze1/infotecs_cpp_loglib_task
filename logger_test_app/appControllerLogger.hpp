@@ -12,13 +12,13 @@
 
 
 /**
- * @class appController
- * @brief Контроллер, отвечающий за жизненный цикл приложения.
+ * @class AppControllerLogger
+ * @brief Контроллер, отвечающий за жизненный цикл приложения отправки логов.
  *
  * Обеспечивает подключение к файлу или сокету для отправки логов,
  * обработку пользовательских команд.  
  */
-class appController{
+class AppControllerLogger{
 public:
     /**
      * @brief Конструктор, который в зависимости от количества параметров создаёт нужный тип логгера logger и запускает работу программы. 
@@ -31,12 +31,12 @@ public:
      * 2) <Уровень важности по умолчанию> <IP-адрес сокета> <Порт сокета> -- для SocketLogger.
      * @note Также инициализирует поток logThread для безопасной обработки логов в очереди logQueue при многопоточном режиме.
      */
-    appController(int argc, char* argv[]);
+    AppControllerLogger(int argc, char* argv[]);
 
     /**
      * @brief Деструктор. Завершает поток logThread для очереди обработки. 
      */
-    ~appController(); 
+    ~AppControllerLogger(); 
 
     /**
      * @brief Логирование сообщения с указанным уровнем важности. 
@@ -63,8 +63,9 @@ public:
      * 2) "setlevel" -- изменения уровня важности по умолчанию.
      * 3) "exit" -- завершение работы программы.
      *
-     * @example Пример команд: log ERROR Произошла критическая ошибка!
-     *                         setlevel WARNING  
+     * @note Пример команд: 
+     * ~ log ERROR Произошла критическая ошибка!
+     * ~ setlevel WARNING  
      */
     void executeCommand(const std::string& command);
 

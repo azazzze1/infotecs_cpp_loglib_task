@@ -1,4 +1,4 @@
-add_executable(logger_test main.cpp appController.cpp threadLogQueue.cpp)
+add_executable(logger_test main.cpp appControllerLogger.cpp threadLogQueue.cpp)
 
 target_link_libraries(logger_test PRIVATE logger)
 

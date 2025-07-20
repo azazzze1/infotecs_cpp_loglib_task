@@ -17,7 +17,7 @@
  * @class FileLogger
  * @brief Реализация ILogger, записывающая логи в файл.
  *
- * Формат записи лога: 
+ * Пример формата записи лога: 
  * [Fri Jul 18 13:29:55 2025] [INFO] Text for test?
  */
 class FileLogger : public ILogger{

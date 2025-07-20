@@ -1,10 +1,10 @@
 #include <iostream>
 
-#include "appController.hpp"
+#include "appControllerStats.hpp"
 
 int main(int argc, char* argv[]){
     
-    appController controller{argc, argv};
+    AppControllerStats controller{argc, argv};
 
     controller.run();
 

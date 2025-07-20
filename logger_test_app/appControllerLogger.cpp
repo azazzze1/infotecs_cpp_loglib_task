@@ -1,8 +1,8 @@
-#include "appController.hpp"
+#include "appControllerLogger.hpp"
 
-// Реализация appController
+// Реализация AppControllerLogger
 
-appController::appController(int argc, char* argv[]) : flagForLoop(false){
+AppControllerLogger::AppControllerLogger(int argc, char* argv[]) : flagForLoop(false){
     std::optional<LogLevel> levelOpt = LoggerUtils::stringToLevel(argv[1]);
 
     LogLevel defaultLevel;
@@ -35,12 +35,12 @@ appController::appController(int argc, char* argv[]) : flagForLoop(false){
     flagForLoop = true; 
 }
 
-appController::~appController(){
+AppControllerLogger::~AppControllerLogger(){
     logQueue.stop();
     if (logThread.joinable()) logThread.join();
 }
 
-void appController::log(const std::string& message, const std::string& strLogLevel){
+void AppControllerLogger::log(const std::string& message, const std::string& strLogLevel){
     std::optional<LogLevel> optLevel = LoggerUtils::stringToLevel(strLogLevel);
     LogLevel logLevel;
     // Если второе слово в команде пользователя -- не уровень важности,
@@ -55,7 +55,7 @@ void appController::log(const std::string& message, const std::string& strLogLev
     }
 }
 
-void appController::setLogLevel(const std::string& strLogLevel){
+void AppControllerLogger::setLogLevel(const std::string& strLogLevel){
     std::optional<LogLevel> optLevel = LoggerUtils::stringToLevel(strLogLevel);
     LogLevel logLevel;
     if(LoggerUtils::validateLogLevel(optLevel, logLevel))
@@ -66,11 +66,11 @@ void appController::setLogLevel(const std::string& strLogLevel){
     }
 }
 
-bool appController::getFlagForLoop(){
+bool AppControllerLogger::getFlagForLoop(){
     return flagForLoop; 
 }
 
-void appController::executeCommand(const std::string& command){
+void AppControllerLogger::executeCommand(const std::string& command){
     std::istringstream iss(command);
     std::string commandName;
     iss>>commandName; 
@@ -79,7 +79,8 @@ void appController::executeCommand(const std::string& command){
         std::cout<<"\tЗавершение программы..."<<std::endl;
         flagForLoop = false;
     }else if(commandName == "log"){
-        std::string logLevel, message; 
+        std::string logLevel, message;
+ 
         iss>>logLevel;
 
         // Проверка на случай, если в команде всего два слова.
@@ -103,6 +104,6 @@ void appController::executeCommand(const std::string& command){
 
 }
 
-void appController::stopApplication(){
+void AppControllerLogger::stopApplication(){
     flagForLoop = false;  
 }

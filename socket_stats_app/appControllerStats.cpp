@@ -1,8 +1,8 @@
-#include "appController.hpp"
+#include "appControllerStats.hpp"
 
 // Реализация appController
 
-appController::appController(int argc, char* argv[]){
+AppControllerStats::AppControllerStats(int argc, char* argv[]){
     if(argc!= 5){
         std::cerr<<"\tВведены не все параметры:"<<std::endl;
         std::cout<<"\t"<<argv[0]<<" <socket-ip-adress> "<<"<socket-port> "<<"<N> "<<"<T>"<<std::endl;
@@ -22,7 +22,7 @@ appController::appController(int argc, char* argv[]){
     flagForWorkLoop = true;  
 }
 
-bool appController::connectToSocket(const std::string& socketAddress, int socketPort){
+bool AppControllerStats::connectToSocket(const std::string& socketAddress, int socketPort){
     socketfd = socket(AF_INET, SOCK_STREAM, 0);
     if (socketfd < 0){
         std::cerr<<"\tОшибка при создании сокета"<<std::endl;
@@ -56,7 +56,7 @@ bool appController::connectToSocket(const std::string& socketAddress, int socket
     return true;
 }
 
-void appController::listenSocket(){
+void AppControllerStats::listenSocket(){
     const int BUFFER_SIZE = 1024;
     char buffer[BUFFER_SIZE];
 
@@ -88,7 +88,7 @@ void appController::listenSocket(){
     }
 }
 
-bool appController::parseLogMessage(const std::string& line, LogMessage& outLogMessage){
+bool AppControllerStats::parseLogMessage(const std::string& line, LogMessage& outLogMessage){
     size_t dateStartPos = line.find('['); 
     size_t dateEndPos = line.find(']');
     size_t levelStartPos = line.find('[', dateEndPos+1);
@@ -138,7 +138,7 @@ bool appController::parseLogMessage(const std::string& line, LogMessage& outLogM
     return true;
 }
 
-void appController::showStats(SocketStats currentSocketStats){
+void AppControllerStats::showStats(SocketStats currentSocketStats){
     std::cout<<"\t\tСтатистика по количеству сообщений"<<std::endl;
     std::cout<<"\tВсего сообщений: "<<currentSocketStats.messageCount<<std::endl;
     std::cout<<"\tСообщений уровня INFO: "<<currentSocketStats.messageLevelCount[LogLevel::INFO]<<std::endl;
@@ -153,7 +153,7 @@ void appController::showStats(SocketStats currentSocketStats){
     std::cout<<std::endl; 
 }
 
-void appController::waitForProcessStats(){
+void AppControllerStats::waitForProcessStats(){
     auto lastStatsTime = std::chrono::system_clock::now();
     SocketStats lastStats;
 
@@ -180,7 +180,7 @@ void appController::waitForProcessStats(){
     std::this_thread::sleep_for(std::chrono::seconds(1)); 
 }
 
-appController::~appController(){
+AppControllerStats::~AppControllerStats(){
     flagForWorkLoop = false;
     if (receiverThread.joinable()) {
         receiverThread.join();
@@ -191,9 +191,9 @@ appController::~appController(){
     close(socketfd);
 }
 
-void appController::run(){
-    receiverThread = std::thread(&appController::listenSocket, this);
-    statsThread = std::thread(&appController::waitForProcessStats, this);
+void AppControllerStats::run(){
+    receiverThread = std::thread(&AppControllerStats::listenSocket, this);
+    statsThread = std::thread(&AppControllerStats::waitForProcessStats, this);
 
     if (receiverThread.joinable()) receiverThread.join();
     if (statsThread.joinable()) statsThread.join();

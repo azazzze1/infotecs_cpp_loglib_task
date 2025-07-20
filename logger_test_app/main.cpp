@@ -1,11 +1,11 @@
 #include <iostream>
 
-#include "appController.hpp"
+#include "appControllerLogger.hpp"
 
 
 int main(int argc, char* argv[]){
     
-    appController controller{argc, argv};
+    AppControllerLogger controller{argc, argv};
     std::string userCommand; 
 
     while (controller.getFlagForLoop()){

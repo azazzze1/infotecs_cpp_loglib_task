@@ -1,3 +1,3 @@
-add_executable(socket_stats_app main.cpp socketStatsCollector.cpp appController.cpp)
+add_executable(socket_stats_app main.cpp socketStatsCollector.cpp appControllerStats.cpp)
 target_link_libraries(socket_stats_app PRIVATE logger)
 target_include_directories(socket_stats_app PRIVATE ${PROJECT_SOURCE_DIR}/logger)

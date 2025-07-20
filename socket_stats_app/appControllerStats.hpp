@@ -10,13 +10,13 @@
 #include <thread>
 
 /**
- * @class appContoller
- * @brief Контроллер, отвечающий за жизненный цикл приложения.
+ * @class AppControllerStats
+ * @brief Контроллер, отвечающий за жизненный цикл приложения сбора статистики логов.
  * 
  * Обеспечивает подключение к сокету и его прослушивание, парсинг логов из сокета,
  * вывод статистики каждые N сообщений или T секунд. 
  */
-class appController{
+class AppControllerStats{
 public:
     /**
      * @brief Конструктор, обработывающий входные параметры приложения и вызывающий подключение к сокету. 
@@ -26,7 +26,7 @@ public:
      * 
      * @note Запускает прослушивание сокета и вывод статистики в двух разных потоках.
      */
-    appController(int argc, char* argv[]);
+    AppControllerStats(int argc, char* argv[]);
 
     /**
      * @brief Подключение к сокету по IP-адресу и порту. 
@@ -77,7 +77,7 @@ public:
     /**
      * @brief Деструтор, закрывающий работающие потоки.  
      */
-    ~appController();
+    ~AppControllerStats();
 
 private:
     SocketStatsCollector socketStatsCollector; ///< Собирает логи и обрабатывает их статистику.

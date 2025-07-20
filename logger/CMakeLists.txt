@@ -1,4 +1,4 @@
-file(GLOB LOGGER_HEADERS "*.hpp" "*.h")
+file(GLOB LOGGER_HEADERS "*.hpp")
 file(GLOB LOGGER_SOURCES "*.cpp")
 
 if(BUILD_SHARED_LIB)
@@ -9,4 +9,7 @@ endif()
 
 target_include_directories(logger PUBLIC ${CMAKE_CURRENT_SOURCE_DIR})
 
-# export(TARGETS logger FILE logger-config.cmake)
+export(TARGETS logger FILE logger-config.cmake)
+
+install(TARGETS logger DESTINATION lib)
+install(FILES ${LOGGER_HEADERS} DESTINATION include/logger)

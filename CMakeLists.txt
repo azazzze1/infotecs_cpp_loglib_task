@@ -6,8 +6,8 @@ set(CMAKE_CXX_STANDARD_REQUIRED ON)
 
 option(BUILD_SHARED_LIB "Build shared (dynamic) library" OFF)
 
-set(CMAKE_C_COMPILER gcc)
+set(CMAKE_INSTALL_PREFIX "${PROJECT_BINARY_DIR}/install" CACHE PATH "Installation directory")
 
 add_subdirectory(logger)
-add_subdirectory(socket_stats_app)
 add_subdirectory(logger_test_app)
+add_subdirectory(socket_stats_app)

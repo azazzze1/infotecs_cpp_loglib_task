@@ -27,6 +27,10 @@ void FileLogger::setLogLevel(LogLevel logLevel){
     defaultLevel = logLevel;
 }
 
+LogLevel FileLogger::getDefaultLevel(){
+    return defaultLevel;
+}
+
 // Реализация SocketLogger 
 
 SocketLogger::SocketLogger(const std::string& host, int port, LogLevel defaultLevel) : defaultLevel(defaultLevel) {
@@ -77,4 +81,8 @@ void SocketLogger::setLogLevel(LogLevel logLevel){
 
 void SocketLogger::log(const std::string& message){
     log(message, defaultLevel); 
+}
+
+LogLevel SocketLogger::getDefaultLevel(){
+    return defaultLevel;
 }

@@ -3,12 +3,13 @@
 // Реализация SocketStatsCollector
 
 void SocketStatsCollector::addMessage(const LogMessage& logMessage){
+    std::lock_guard<std::mutex> lock(mtx);
     messageHistory.push_back(logMessage); 
 
     socketStats.messageCount++;
     socketStats.messageLevelCount[logMessage.logLevel]++; 
 
-    size_t logMessageLength = logMessage.text.length(); 
+    size_t logMessageLength = logMessage.text.size(); 
     socketStats.minMessageLength = std::min(socketStats.minMessageLength, logMessageLength);
     socketStats.maxMessageLength = std::max(socketStats.maxMessageLength, logMessageLength);
     socketStats.totalLength += logMessageLength; 
@@ -16,6 +17,7 @@ void SocketStatsCollector::addMessage(const LogMessage& logMessage){
 
 
 SocketStats SocketStatsCollector::getSocketStats(){
+    std::lock_guard<std::mutex> lock(mtx);
     auto now = std::chrono::system_clock::now();
     auto hourAgo = now - std::chrono::hours(1);
 
@@ -26,6 +28,8 @@ SocketStats SocketStatsCollector::getSocketStats(){
     
     if(socketStats.messageCount != 0)
         socketStats.avgMessageLength = socketStats.totalLength / socketStats.messageCount; 
-        
+    
+    // Учитываем пробел и перевод строки в найденных предложениях
+    socketStats.minMessageLength-=3;
     return socketStats; 
 }

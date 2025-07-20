@@ -48,6 +48,13 @@ class ILogger{
         * @param logLevel Уровень важности. 
         */
         virtual void setLogLevel(LogLevel logLevel) = 0;
+
+        /**
+         * @brief Считывание текущего уровня важности по умолчанию.  
+         * 
+         * @return LogLevel Текущий уровень важности. 
+         */
+        virtual LogLevel getDefaultLevel() = 0;
 };
 
 #endif 

@@ -119,11 +119,43 @@ virtual&#160;</td><td class="memItemRight" valign="bottom"><b>~ILogger</b> ()=de
 <tr class="memdesc:a4053d91422b7d05415f7103d3304149c"><td class="mdescLeft">&#160;</td><td class="mdescRight">Запись сообщения в лог без указания уровня важности.  <br /></td></tr>
 <tr class="memitem:a1d77680f1fe9b092a0bd50bcad5dece4" id="r_a1d77680f1fe9b092a0bd50bcad5dece4"><td class="memItemLeft" align="right" valign="top">virtual void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#a1d77680f1fe9b092a0bd50bcad5dece4">setLogLevel</a> (LogLevel logLevel)=0</td></tr>
 <tr class="memdesc:a1d77680f1fe9b092a0bd50bcad5dece4"><td class="mdescLeft">&#160;</td><td class="mdescRight">Изменение уровня важности по умолчанию.  <br /></td></tr>
+<tr class="memitem:a4c938530af25dfcebcb1c9d6e8ac67dd" id="r_a4c938530af25dfcebcb1c9d6e8ac67dd"><td class="memItemLeft" align="right" valign="top">virtual LogLevel&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#a4c938530af25dfcebcb1c9d6e8ac67dd">getDefaultLevel</a> ()=0</td></tr>
+<tr class="memdesc:a4c938530af25dfcebcb1c9d6e8ac67dd"><td class="mdescLeft">&#160;</td><td class="mdescRight">Считывание текущего уровня важности по умолчанию.  <br /></td></tr>
 </table>
 <a name="details" id="details"></a><h2 id="header-details" class="groupheader">Detailed Description</h2>
 <div class="textblock"><p>Интерфейс для систем логирования. </p>
 <p>Предоставляет унифицированный способ записи логов, а также возможность изменять уровень логирования по умолчанию. </p>
 </div><a name="doc-func-members" id="doc-func-members"></a><h2 id="header-doc-func-members" class="groupheader">Member Function Documentation</h2>
+<a id="a4c938530af25dfcebcb1c9d6e8ac67dd" name="a4c938530af25dfcebcb1c9d6e8ac67dd"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a4c938530af25dfcebcb1c9d6e8ac67dd">&#9670;&#160;</a></span>getDefaultLevel()</h2>
+
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">virtual LogLevel ILogger::getDefaultLevel </td>
+          <td>(</td>
+          <td class="paramname"><span class="paramname"><em></em></span></td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel pure-virtual">pure virtual</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+<p>Считывание текущего уровня важности по умолчанию. </p>
+<dl class="section return"><dt>Returns</dt><dd>LogLevel Текущий уровень важности. </dd></dl>
+
+<p>Implemented in <a class="el" href="classFileLogger.html#a8b78aa143132786fc8b534688b8c13da">FileLogger</a>, and <a class="el" href="classSocketLogger.html#a7184ba60cd1b1740acc8aeb40ed9fe57">SocketLogger</a>.</p>
+
+</div>
+</div>
 <a id="a4053d91422b7d05415f7103d3304149c" name="a4053d91422b7d05415f7103d3304149c"></a>
 <h2 class="memtitle"><span class="permalink"><a href="#a4053d91422b7d05415f7103d3304149c">&#9670;&#160;</a></span>log() <span class="overload">[1/2]</span></h2>
 

@@ -7,6 +7,7 @@
 #include <chrono>
 #include <vector>
 #include <algorithm>
+#include <mutex>
 
 #include "ilogger.hpp"
 
@@ -63,6 +64,7 @@ public:
 private:
     SocketStats socketStats; ///< Хранит актуальную статистику при её вызове.
     std::vector<LogMessage> messageHistory; ///< История полученных логов.
+    std::mutex mtx; ///< Мьютекс для синхронизации обработки логов. 
  };
 
 #endif

@@ -56,6 +56,13 @@ public:
     */
     void setLogLevel(LogLevel logLevel) override; 
 
+    /**
+    * @brief Считывание текущего уровня важности по умолчанию.  
+    * 
+    * @return LogLevel Текущий уровень важности. 
+    */
+    virtual LogLevel getDefaultLevel() override;
+
 private:
     LogLevel defaultLevel; ///< Уровень логирования по умолчанию. 
     std::ofstream file_; ///< Поток файла для записи логов. 
@@ -103,6 +110,13 @@ public:
     * @param logLevel Уровень важности. 
     */
     void setLogLevel(LogLevel logLevel) override; 
+
+    /**
+    * @brief Считывание текущего уровня важности по умолчанию.  
+    * 
+    * @return LogLevel Текущий уровень важности. 
+    */
+    virtual LogLevel getDefaultLevel() override;
 
 private:
     int sockfd; ///< Дескриптор сокета для поддержки соединения.

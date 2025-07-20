@@ -11,3 +11,4 @@ set(CMAKE_INSTALL_PREFIX "${PROJECT_BINARY_DIR}/install" CACHE PATH "Installatio
 add_subdirectory(logger)
 add_subdirectory(logger_test_app)
 add_subdirectory(socket_stats_app)
+add_subdirectory(tests)

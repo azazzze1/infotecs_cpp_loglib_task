@@ -82,6 +82,7 @@ void AppControllerStats::listenSocket(){
         while(std::getline(iss,line)){
             LogMessage logMessage;
             if (parseLogMessage(line, logMessage)){
+                std::cout << line << std::endl;
                 socketStatsCollector.addMessage(logMessage);
             }
         }

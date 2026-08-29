@@ -14,8 +14,6 @@ void SocketStatsCollector::addMessage(const LogMessage& logMessage){
     socketStats.minMessageLength = std::min(socketStats.minMessageLength, logMessageLength);
     socketStats.maxMessageLength = std::max(socketStats.maxMessageLength, logMessageLength);
     socketStats.totalLength += logMessageLength; 
-
-    std::cout<<logMessage.text<<std::endl; 
 } 
 
 

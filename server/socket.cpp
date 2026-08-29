@@ -64,7 +64,14 @@ int main() {
     socklen_t addrlen = sizeof(address);
 
     if ((server_fd = socket(AF_INET, SOCK_STREAM, 0)) == 0) {
-        perror("socket failed");
+        perror("Ошибка создания сокета");
+        exit(EXIT_FAILURE);
+    }
+
+    int opt = 1;
+    if (setsockopt(server_fd, SOL_SOCKET, SO_REUSEADDR, &opt, sizeof(opt)) < 0) {
+        perror("Ошибка повторного использования адреса");
+        close(server_fd);
         exit(EXIT_FAILURE);
     }
 
@@ -73,13 +80,13 @@ int main() {
     address.sin_port = htons(PORT);
 
     if (bind(server_fd, (struct sockaddr *)&address, sizeof(address)) < 0) {
-        perror("bind failed");
+        perror("Ошибка привязки сокета");
         close(server_fd);
         exit(EXIT_FAILURE);
     }
 
     if (listen(server_fd, 2) < 0) {
-        perror("listen");
+        perror("Ошибка прослушивания сокета");
         close(server_fd);
         exit(EXIT_FAILURE);
     }

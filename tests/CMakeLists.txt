@@ -6,10 +6,13 @@ file(GLOB_RECURSE TEST_SOURCES "*.cpp")
 add_executable(tests 
     ${TEST_SOURCES} 
     ${PROJECT_SOURCE_DIR}/socket_stats_app/socketStatsCollector.cpp
+    ${PROJECT_SOURCE_DIR}/socket_stats_app/appControllerStats.cpp
+    ${PROJECT_SOURCE_DIR}/logger_test_app/threadLogQueue.cpp
 )
 
 target_include_directories(tests PRIVATE 
     ${PROJECT_SOURCE_DIR}/logger
+    ${PROJECT_SOURCE_DIR}/logger_test_app
     ${PROJECT_SOURCE_DIR}/socket_stats_app
 )
 
